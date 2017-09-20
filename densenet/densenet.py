@@ -106,7 +106,7 @@ def run_model(data, image_dims, label_count, depth):
         xs_, ys_ = batches_data[batch_idx], batches_labels[batch_idx]
         batch_res = session.run([ train_step, cross_entropy, accuracy ],
           feed_dict = { xs: xs_, ys: ys_, lr: learning_rate, is_training: True, keep_prob: 0.8 })
-        if batch_idx % 100 == 0: print epoch, batch_idx, batch_res[1:]
+        #if batch_idx % 100 == 0: print epoch, batch_idx, batch_res[1:]
 
       save_path = saver.save(session, 'densenet_%d.ckpt' % epoch)
       test_results = run_in_batch_avg(session, [ cross_entropy, accuracy ], [ xs, ys ],
