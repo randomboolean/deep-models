@@ -51,12 +51,12 @@ def block(input, layers, in_features, growth, is_training, keep_prob):
 def avg_pool(input, s):
   return tf.nn.avg_pool(input, [ 1, s, s, 1 ], [1, s, s, 1 ], 'VALID')
 
-def run_model(data, image_dim, label_count, depth):
+def run_model(data, image_dims, label_count, depth):
   weight_decay = 1e-4
   layers = (depth - 4) / 3
   graph = tf.Graph()
   with graph.as_default():
-    xs = tf.placeholder("float", shape=[None, image_dim])
+    xs = tf.placeholder("float", shape=[None] + image_dims)
     ys = tf.placeholder("float", shape=[None, label_count])
     lr = tf.placeholder("float", shape=[])
     keep_prob = tf.placeholder(tf.float32)
@@ -117,11 +117,11 @@ def run():
   (train_data, train_labels), (test_data, test_labels) = keras.datasets.cifar10.load_data()
   print "Train:", np.shape(train_data), np.shape(train_labels)
   print "Test:", np.shape(test_data), np.shape(test_labels)
-  data = { 'train_data': train_data,
-      'train_labels': train_labels,
-      'test_data': test_data,
-      'test_labels': test_labels }
-  image_dim, label_count = 32, 10
-  run_model(data, image_dim, label_count, 40)
+  data = { 'train_data': train_data / 255.0,
+      'train_labels': keras.utils.np_utils.to_categorical(train_labels),
+      'test_data': test_data / 255.0,
+      'test_labels': keras.utils.np_utils.to_categorical(test_labels) }
+  image_dims, label_count = [32, 32, 3], 10
+  run_model(data, image_dims, label_count, 40)
 
 run()
